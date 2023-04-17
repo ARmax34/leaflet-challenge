@@ -52,4 +52,4 @@ Put each dataset into separate overlays that can be turned on and off independen
 
 Add layer controls to your map.
 
-Shout outs and thanks to The Program (a good part of this was based on the  assignments we did) and Claire Cressman who was instrumental in my progress in this project. I don't know 
+Shout outs and thanks to The Program (a good part of this was based on the  assignments we did), my tutor David Pecot, and Claire Cressman who was instrumental in my progress in this project. I don't know 

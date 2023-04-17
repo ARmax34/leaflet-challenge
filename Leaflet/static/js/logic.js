@@ -1,58 +1,32 @@
- // links to earthquake data and tectonic plate data 
- var earthquakeUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson";
- var plates_Url = "https://raw.githubusercontent.com/fraxen/plates/master/GeoJSON/PB2002_boundaries.json";
-
-// create layer groups for for earthquakes and technonic plates
-var earthquakes = L.layerGroup();
-var plates = L.layerGroup();
-
-// Adding the tile layers (background maps)
-var satelliteMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+// Creating our initial map object:
+// We set the longitude, latitude, and starting zoom level.
+// This gets inserted into the div with an id of "map".
+url_var = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
+d3.json(url_var).then(function(data){
+    console.log(data);
+    mapEarthquakes(data)
 });
 
-var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-});
 
-// Define a baseMaps object to hold the base layers
-var baseMaps = {
-    "Satellite Map": satelliteMap,
-    "Topography": topo
-  };
-  
-// Create overlay object to hold the overlay layer
-var overlayMaps = {
-    "Earthquakes": earthquakes,
-    "Tectonic Plates": plates
-  };
 
-// Creating the map object with layers 
-var myMap = L.map("map", {
-    center: [40, -10],
-    zoom: 2,
-    layers: [satelliteMap, earthquakes]
-  });
+function mapEarthquakes(data){
+    var myMap = L.map("map", {
+        center: [45.52, -122.67],
+        zoom: 4
+      });
+      
+      // Adding a tile layer (the background map image) to our map:
+      // We use the addTo() method to add objects to our map.
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(myMap);
 
-// Create a layer control to toggle between maps then add to map
-L.control.layers(baseMaps, overlayMaps, {
-    collapsed: false
-  }).addTo(myMap);
 
-// use d3 to load tectonic plate data
-d3.json(plates_Url).then(function(data) {
-    L.geoJSON(data, {
-      style: {
-        color: "orange",
-        weight: 1.5
-      }
-    }).addTo(plates);
-    // add tectonic plate layer to map 
-    plates.addTo(myMap);
-  });
 
-  // use d3 to load earthquake data 
-  d3.json(earthquakeUrl).then(function(data){
+
+
+
+d3.json(url_var).then(function(data){
     // marker size determined by magnitude
     function markerSize(magnitude) {
         return magnitude * 3.5;
@@ -102,9 +76,7 @@ d3.json(plates_Url).then(function(data) {
             layer.bindPopup("Location: " + feature.properties.place + "<hr>Magnitude: " + feature.properties.mag
             + "<hr>Depth: " + feature.geometry.coordinates[2]);
         }
-    }).addTo(earthquakes);
-    // add earthquakes layer to map
-    earthquakes.addTo(myMap);
+    }).addTo(myMap);
 
     // add legend
     var legend = L.control({position: "bottomright"});
@@ -127,3 +99,6 @@ d3.json(plates_Url).then(function(data) {
     legend.addTo(myMap);
 
   });
+
+
+};
